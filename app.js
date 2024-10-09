@@ -24,32 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-// Função para gerar rotas automáticas com base nos arquivos da pasta views
-function generateRoutesFromViews() {
-  const viewsDir = path.join(__dirname, 'views');
-  
-  fs.readdir(viewsDir, (err, files) => {
-    if (err) {
-      console.error('Erro ao ler a pasta views:', err);
-      return;
-    }
-    
-    files.forEach(file => {
-      const routeName = `/${file.replace('.ejs', '')}`;
-      const viewName = file.replace('.ejs', '');
-      
-      app.get(routeName, (req, res) => {
-        res.render(viewName); 
-      });
-      
-      console.log(`Rota criada: ${routeName}`);
-    });
-  });
-}
-
-// Gera as rotas automaticamente
-generateRoutesFromViews();
-
 // Captura de erros 404
 app.use(function(req, res, next) {
   next(createError(404));
@@ -57,6 +31,7 @@ app.use(function(req, res, next) {
 
 // Manipulador de erros
 app.use(function(err, req, res, next) {
+  console.error(err); // Exibe o erro no console
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
